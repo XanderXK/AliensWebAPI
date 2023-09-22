@@ -39,12 +39,12 @@ public class UfologistRepository : IUfologistRepository
         return result;
     }
 
-    public bool UpdateUfologst(Ufologist ufologist)
+    public bool DeleteUfologst(Ufologist ufologist)
     {
-        _dataContext.Update(ufologist);
+        _dataContext.Remove(ufologist);
         return Save();
     }
-
+    
     public bool Save()
     {
         var saved = _dataContext.SaveChanges();

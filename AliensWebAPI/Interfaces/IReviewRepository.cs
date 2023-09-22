@@ -10,5 +10,6 @@ public interface IReviewRepository
     public bool CreateReview(Review review);
     public bool UpdateReview(Review review);
     public bool DeleteReview(Review review);
+    public bool DeleteReviews(ICollection<Review> reviews);
     public bool Save();
 }

@@ -10,11 +10,18 @@ namespace AliensWebAPI.Controllers;
 public class UfologistController : Controller
 {
     private readonly IUfologistRepository _ufologistRepository;
+    private readonly IReviewRepository _reviewRepository;
     private readonly IMapper _mapper;
 
-    public UfologistController(IUfologistRepository ufologistRepository, IMapper mapper)
+    private const string CreatedMessage = "Happy ufologist created!";
+    private const string SaveErrorMessage = "Something went wrong";
+    private const string NotFoundMessage = "Ufologist not found";
+
+
+    public UfologistController(IUfologistRepository ufologistRepository, IReviewRepository reviewRepository, IMapper mapper)
     {
         _ufologistRepository = ufologistRepository;
+        _reviewRepository = reviewRepository;
         _mapper = mapper;
     }
 
@@ -25,37 +32,69 @@ public class UfologistController : Controller
         var ufologistDtos = _mapper.Map<List<UfologistDto>>(ufologists);
         return Ok(ufologistDtos);
     }
-    
+
     [HttpGet("{id:int}")]
     public IActionResult GetUfologist(int id)
     {
-        var ufologist = _ufologistRepository.GetUfologistReviews(id);
-        var ufologistDto = _mapper.Map<UfologistDto>(ufologist);
-        return Ok(ufologistDto);
-    }
-    
-    [HttpGet("{ufologistId:int}/Reviews")]
-    public IActionResult GetUfologistReviews(int ufologistId)
-    {
-        return Ok(_ufologistRepository.GetUfologistReviews(ufologistId));
-    }
-
-    [HttpPost()]
-    public IActionResult CreateUfologist(UfologistCreateDto? ufologistCreateDto)
-    {
-        if (!ModelState.IsValid || ufologistCreateDto == null)
+        if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var ufologst = _mapper.Map<Ufologist>(ufologistCreateDto);
+        var ufologist = _ufologistRepository.GetUfologist(id);
+        var ufologistDto = _mapper.Map<UfologistDto>(ufologist);
+        return Ok(ufologistDto);
+    }
+
+    [HttpGet("{ufologistId:int}/Reviews")]
+    public IActionResult GetUfologistReviews(int ufologistId)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        return Ok(_ufologistRepository.GetUfologistReviews(ufologistId));
+    }
+
+    [HttpPost("{name}")]
+    public IActionResult CreateUfologist(string name)
+    {
+        if (!ModelState.IsValid || string.IsNullOrEmpty(name))
+        {
+            return BadRequest(ModelState);
+        }
+
+        var ufologst = new Ufologist { Name = name };
         var result = _ufologistRepository.CreateUfologst(ufologst);
         if (!result)
         {
-            ModelState.AddModelError("", "Saving error");
+            ModelState.AddModelError("", SaveErrorMessage);
             return StatusCode(500, ModelState);
         }
 
-        return Ok("Happy ufologist created!");
+        return Ok(CreatedMessage);
+    }
+
+    [HttpDelete("{id:int}")]
+    public IActionResult DeleteUfologistWithPosts(int id)
+    {
+        var ufologist = _ufologistRepository.GetUfologist(id);
+        if (ufologist == null)
+        {
+            return NotFound(NotFoundMessage);
+        }
+
+        var reviews = _ufologistRepository.GetUfologistReviews(id);
+        _reviewRepository.DeleteReviews(reviews);
+        
+        var result = _ufologistRepository.DeleteUfologst(ufologist);
+        if (!result)
+        {
+            ModelState.AddModelError("", SaveErrorMessage);
+            return StatusCode(500, ModelState);
+        }
+
+        return NoContent();
     }
 }

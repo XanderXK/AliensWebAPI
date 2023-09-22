@@ -28,6 +28,6 @@ public class MappingProfiles : Profile
             .ForMember(dto => dto.ReviewsCount, options => options
                 .MapFrom(ufologist => ufologist.Reviews.Count));
 
-        CreateMap<UfologistCreateDto, Ufologist>();
+        CreateMap<Ufologist, UfologistDto>();
     }
 }

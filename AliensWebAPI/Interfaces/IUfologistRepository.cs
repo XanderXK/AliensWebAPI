@@ -8,6 +8,6 @@ public interface IUfologistRepository
     public Ufologist? GetUfologist(int id);
     public ICollection<Review> GetUfologistReviews(int id);
     public bool CreateUfologst(Ufologist ufologist);
-    public bool UpdateUfologst(Ufologist ufologist);
+    public bool DeleteUfologst(Ufologist ufologist);
     public bool Save();
 }
