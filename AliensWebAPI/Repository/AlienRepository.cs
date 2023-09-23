@@ -46,7 +46,7 @@ public class AlienRepository : IAlienRepository
                 });
             }
 
-            _dataContext.Add(alienSolarSystems);
+            _dataContext.AddRange(alienSolarSystems);
         }
 
         _dataContext.Add(alien);
