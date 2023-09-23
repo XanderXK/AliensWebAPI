@@ -13,6 +13,7 @@ public class MappingProfiles : Profile
                 .MapFrom(alien => alien.Category.Name));
 
         CreateMap<AlienDto, Alien>();
+        CreateMap<AlienCreateDto, Alien>();
 
         CreateMap<Category, CategoryDto>();
         CreateMap<CategoryDto, Category>();

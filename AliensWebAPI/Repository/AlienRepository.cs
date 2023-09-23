@@ -16,20 +16,15 @@ public class AlienRepository : IAlienRepository
 
     public ICollection<Alien> GetAliens()
     {
-        return _dataContext.Aliens.Include(a=>a.Category).OrderBy(alien => alien.Id).ToList();
+        return _dataContext.Aliens.Include(a => a.Category).OrderBy(alien => alien.Id).ToList();
     }
 
     public Alien? GetAlien(int id)
     {
-        var alien = _dataContext.Aliens.Include(a=>a.Category).FirstOrDefault(a => a.Id == id);
+        var alien = _dataContext.Aliens.Include(a => a.Category).FirstOrDefault(a => a.Id == id);
         return alien;
     }
 
-    public Alien GetAlien(string name)
-    {
-        var alien = _dataContext.Aliens.Include(a=>a.Category).FirstOrDefault(a => a.Name == name);
-        return alien;
-    }
 
     public int GetAlienRating(int id)
     {
@@ -37,8 +32,23 @@ public class AlienRepository : IAlienRepository
         return reviews.Count();
     }
 
-    public bool CreateAlien(Alien alien)
+    public bool CreateAlien(Alien alien, ICollection<SolarSystem>? solarSystems)
     {
+        if (solarSystems != null)
+        {
+            var alienSolarSystems = new List<AlienSolarSystem>();
+            foreach (var solarSystem in solarSystems)
+            {
+                alienSolarSystems.Add(new AlienSolarSystem()
+                {
+                    SolarSystem = solarSystem,
+                    Alien = alien
+                });
+            }
+
+            _dataContext.Add(alienSolarSystems);
+        }
+
         _dataContext.Add(alien);
         return Save();
     }

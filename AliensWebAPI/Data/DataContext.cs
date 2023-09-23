@@ -24,13 +24,16 @@ public class DataContext : DbContext
             aSystem.AlienId,
             aSystem.SolarSystemId
         });
+        
 
-      //  modelBuilder.Entity<Category>().HasMany(c => c.Aliens).WithOne(a => a.Category);
+        modelBuilder.Entity<AlienSolarSystem>()
+            .HasOne(a => a.Alien)
+            .WithMany(s => s.SolarSystems)
+            .HasForeignKey(s => s.AlienId);
 
-        modelBuilder.Entity<AlienSolarSystem>().HasOne(a => a.Alien)
-            .WithMany(s => s.SolarSystems).HasForeignKey(s => s.AlienId);
-
-        modelBuilder.Entity<AlienSolarSystem>().HasOne(s => s.SolarSystem)
-            .WithMany(a => a.AlienSolarSystems).HasForeignKey(a => a.SolarSystemId);
+        modelBuilder.Entity<AlienSolarSystem>()
+            .HasOne(s => s.SolarSystem)
+            .WithMany(a => a.AlienSolarSystems)
+            .HasForeignKey(a => a.SolarSystemId);
     }
 }

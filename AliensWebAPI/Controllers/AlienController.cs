@@ -11,12 +11,20 @@ public class AlienController : Controller
 {
     private readonly IAlienRepository _alienRepository;
     private readonly ICategoryRepository _categoryRepository;
+    private readonly ISolarSystemRepository _solarSystemRepository;
     private readonly IMapper _mapper;
 
-    public AlienController(IAlienRepository alienRepository, ICategoryRepository categoryRepository, IMapper mapper)
+    private const string AlienNotFoundMessage = "Alien not found";
+    private const string SolarSystemNotFoundMessage = "Solar System not found";
+    private const string AlreadyExistsMessage = "Alien already exists";
+    private const string SaveErrorMessage = "Something went wrong";
+    private const string CreatedMessage = "Alien created";
+
+    public AlienController(IAlienRepository alienRepository, ICategoryRepository categoryRepository, ISolarSystemRepository solarSystemRepository, IMapper mapper)
     {
         _alienRepository = alienRepository;
         _categoryRepository = categoryRepository;
+        _solarSystemRepository = solarSystemRepository;
         _mapper = mapper;
     }
 
@@ -36,6 +44,11 @@ public class AlienController : Controller
         }
 
         var alien = _alienRepository.GetAlien(id);
+        if (alien == null)
+        {
+            return NotFound(AlienNotFoundMessage);
+        }
+
         return Ok(_mapper.Map<AlienDto>(alien));
     }
 
@@ -51,35 +64,54 @@ public class AlienController : Controller
     }
 
     [HttpPost]
-    public IActionResult CreateAlien(AlienDto? alienDto)
+    public IActionResult CreateAlien(AlienCreateDto alienCreateDto)
     {
-        if (!ModelState.IsValid || alienDto == null)
+        if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var category = _categoryRepository.GetCategory(alienDto.CategoryName);
+        var exists = _alienRepository.GetAliens()
+            .Any(a => string.Equals(a.Name, alienCreateDto.Name, StringComparison.CurrentCultureIgnoreCase));
+        
+        if (exists)
+        {
+            ModelState.AddModelError("", AlreadyExistsMessage);
+            return StatusCode(422, ModelState);
+        }
+
+        var category = _categoryRepository.GetCategory(alienCreateDto.CategoryName);
         if (category == null)
         {
-            category = new Category
-            {
-                Name = alienDto.CategoryName
-            };
-
+            category = new Category { Name = alienCreateDto.CategoryName };
             _categoryRepository.CreateCategory(category);
         }
 
-        var alien = _mapper.Map<Alien>(alienDto);
-        alien.Category = category;
+        var solarSystems = new List<SolarSystem>();
+        if (alienCreateDto.SolarSystemIds != null)
+        {
+            foreach (var solarSystemId in alienCreateDto.SolarSystemIds)
+            {
+                var currentSystem = _solarSystemRepository.GetSolarSystem(solarSystemId);
+                if (currentSystem == null)
+                {
+                    return NotFound(SolarSystemNotFoundMessage);
+                }
 
-        var result = _alienRepository.CreateAlien(alien);
+                solarSystems.Add(currentSystem);
+            }
+        }
+
+        var alien = _mapper.Map<Alien>(alienCreateDto);
+        alien.Category = category;
+        var result = _alienRepository.CreateAlien(alien, solarSystems);
         if (!result)
         {
-            ModelState.AddModelError("", "Saving error");
+            ModelState.AddModelError("", SaveErrorMessage);
             return StatusCode(500, ModelState);
         }
 
-        return Ok("Happy ufologist created");
+        return Ok(CreatedMessage);
     }
 
     [HttpPut]
@@ -93,7 +125,7 @@ public class AlienController : Controller
         var alien = _alienRepository.GetAlien(alienDto.Id);
         if (alien == null)
         {
-            return NotFound("Alien with this id is not found");
+            return NotFound(AlienNotFoundMessage);
         }
 
         alien = _mapper.Map<Alien>(alienDto);

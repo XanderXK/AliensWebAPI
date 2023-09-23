@@ -8,5 +8,4 @@ public class AlienDto
     public string Name { get; set; } = "";
     public DateTime ContactDate { get; set; }
     public string CategoryName { get; set; } = "";
-    public ICollection<SolarSystem>? SolarSystems { get; set; }
 }
