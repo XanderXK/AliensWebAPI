@@ -2,8 +2,8 @@ namespace AliensWebAPI.Dtos;
 
 public class ReviewCreateDto
 {
-    public string Title { get; set; } = "";
-    public string Text { get; set; } = "";
-    public int AlienId { get; set; }
-    public int UfologistId { get; set; }
+    public required string Title { get; set; }
+    public required string Text { get; set; }
+    public required int AlienId { get; set; }
+    public required int UfologistId { get; set; }
 }

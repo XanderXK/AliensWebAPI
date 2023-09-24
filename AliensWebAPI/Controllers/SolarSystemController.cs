@@ -63,21 +63,21 @@ public class SolarSystemController : Controller
     }
 
     [HttpPost]
-    public IActionResult CreateSolarSystem(SolarSystemDto? solarSystemDto)
+    public IActionResult CreateSolarSystem(SolarSystemCreateDto solarSystemCreateDto)
     {
-        if (!ModelState.IsValid || solarSystemDto == null)
+        if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var exists = _solarSystemRepository.GetSolarSystems().Any(s => string.Equals(s.Name, solarSystemDto.Name, StringComparison.CurrentCultureIgnoreCase));
+        var exists = _solarSystemRepository.GetSolarSystems().Any(s => string.Equals(s.Name, solarSystemCreateDto.Name, StringComparison.CurrentCultureIgnoreCase));
         if (exists)
         {
             ModelState.AddModelError("", AlreadyExistsMessage);
             return StatusCode(422, ModelState);
         }
 
-        var solarSystem = _mapper.Map<SolarSystem>(solarSystemDto);
+        var solarSystem = _mapper.Map<SolarSystem>(solarSystemCreateDto);
         var result = _solarSystemRepository.CreateSolarSystem(solarSystem);
         if (!result)
         {

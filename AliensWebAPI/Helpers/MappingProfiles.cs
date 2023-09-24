@@ -26,6 +26,8 @@ public class MappingProfiles : Profile
 
         CreateMap<SolarSystem, SolarSystemDto>();
         CreateMap<SolarSystemDto, SolarSystem>();
+        CreateMap<SolarSystemCreateDto, SolarSystem>();
+
 
         CreateMap<Ufologist, UfologistDto>()
             .ForMember(dto => dto.ReviewsCount, options => options
