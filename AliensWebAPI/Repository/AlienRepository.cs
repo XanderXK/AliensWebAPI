@@ -16,15 +16,20 @@ public class AlienRepository : IAlienRepository
 
     public ICollection<Alien> GetAliens()
     {
-        return _dataContext.Aliens.Include(a => a.Category).OrderBy(alien => alien.Id).ToList();
+        return _dataContext.Aliens
+            .Include(a => a.Category)
+            .Include(a => a.SolarSystems)
+            .OrderBy(alien => alien.Id).ToList();
     }
 
     public Alien? GetAlien(int id)
     {
-        var alien = _dataContext.Aliens.Include(a => a.Category).FirstOrDefault(a => a.Id == id);
+        var alien = _dataContext.Aliens
+            .Include(a => a.Category)
+            .Include(a => a.SolarSystems)
+            .FirstOrDefault(a => a.Id == id);
         return alien;
     }
-
 
     public int GetAlienRating(int id)
     {
@@ -55,6 +60,8 @@ public class AlienRepository : IAlienRepository
 
     public bool UpdateAlien(Alien alien)
     {
+        var currentAlien = _dataContext.Aliens.Single(a => a.Id == alien.Id)!;
+        _dataContext.Entry(currentAlien).State = EntityState.Detached;
         _dataContext.Update(alien);
         return Save();
     }

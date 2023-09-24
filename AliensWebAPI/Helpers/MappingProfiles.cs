@@ -10,7 +10,9 @@ public class MappingProfiles : Profile
     {
         CreateMap<Alien, AlienDto>()
             .ForMember(dto => dto.CategoryName, options => options
-                .MapFrom(alien => alien.Category.Name));
+                .MapFrom(alien => alien.Category.Name))
+            .ForMember(dto => dto.SolarSystemIds, options => options
+                .MapFrom(solarSystems => solarSystems.SolarSystems!.Select(s => s.SolarSystemId)));
 
         CreateMap<AlienDto, Alien>();
         CreateMap<AlienCreateDto, Alien>();

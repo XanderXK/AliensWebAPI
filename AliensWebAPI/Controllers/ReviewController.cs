@@ -3,7 +3,6 @@ using AliensWebAPI.Interfaces;
 using AliensWebAPI.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace AliensWebAPI.Controllers;
 

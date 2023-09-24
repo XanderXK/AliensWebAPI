@@ -5,12 +5,12 @@ namespace AliensWebAPI.Data;
 
 public class DataContext : DbContext
 {
-    public DbSet<Alien> Aliens { get; set; }
-    public DbSet<AlienSolarSystem> AliensSolarSystems { get; set; }
-    public DbSet<Category> Categories { get; set; }
-    public DbSet<Review> Reviews { get; set; }
-    public DbSet<SolarSystem> SolarSystems { get; set; }
-    public DbSet<Ufologist> Ufologists { get; set; }
+    public DbSet<Alien> Aliens { get; set; } = null!;
+    public DbSet<AlienSolarSystem> AliensSolarSystems { get; set; } = null!;
+    public DbSet<Category> Categories { get; set; } = null!;
+    public DbSet<Review> Reviews { get; set; } = null!;
+    public DbSet<SolarSystem> SolarSystems { get; set; } = null!;
+    public DbSet<Ufologist> Ufologists { get; set; } = null!;
 
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
@@ -24,7 +24,7 @@ public class DataContext : DbContext
             aSystem.AlienId,
             aSystem.SolarSystemId
         });
-        
+
 
         modelBuilder.Entity<AlienSolarSystem>()
             .HasOne(a => a.Alien)

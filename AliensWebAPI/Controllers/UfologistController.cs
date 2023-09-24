@@ -87,7 +87,7 @@ public class UfologistController : Controller
 
         var reviews = _ufologistRepository.GetUfologistReviews(id);
         _reviewRepository.DeleteReviews(reviews);
-        
+
         var result = _ufologistRepository.DeleteUfologst(ufologist);
         if (!result)
         {

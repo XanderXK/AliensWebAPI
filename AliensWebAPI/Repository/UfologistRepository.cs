@@ -16,18 +16,18 @@ public class UfologistRepository : IUfologistRepository
 
     public ICollection<Ufologist> GetUfologists()
     {
-        return _dataContext.Ufologists.OrderBy(ufologist => ufologist!.Id).ToList()!;
+        return _dataContext.Ufologists.OrderBy(ufologist => ufologist.Id).ToList();
     }
 
     public Ufologist? GetUfologist(int id)
     {
-        return _dataContext.Ufologists.FirstOrDefault(ufologist => ufologist!.Id == id);
+        return _dataContext.Ufologists.FirstOrDefault(ufologist => ufologist.Id == id);
     }
 
     public ICollection<Review> GetUfologistReviews(int id)
     {
         return _dataContext.Ufologists
-            .Include(ufologist => ufologist!.Reviews)
+            .Include(ufologist => ufologist.Reviews)
             .FirstOrDefault(ufologist => ufologist.Id == id)!
             .Reviews;
     }

@@ -73,7 +73,7 @@ public class AlienController : Controller
 
         var exists = _alienRepository.GetAliens()
             .Any(a => string.Equals(a.Name, alienCreateDto.Name, StringComparison.CurrentCultureIgnoreCase));
-        
+
         if (exists)
         {
             ModelState.AddModelError("", AlreadyExistsMessage);
@@ -122,13 +122,12 @@ public class AlienController : Controller
             return BadRequest(ModelState);
         }
 
-        var alien = _alienRepository.GetAlien(alienDto.Id);
-        if (alien == null)
+        if (_alienRepository.GetAlien(alienDto.Id) == null)
         {
             return NotFound(AlienNotFoundMessage);
         }
 
-        alien = _mapper.Map<Alien>(alienDto);
+        var alien = _mapper.Map<Alien>(alienDto);
         var result = _alienRepository.UpdateAlien(alien);
         if (!result)
         {

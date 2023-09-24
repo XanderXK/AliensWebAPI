@@ -17,7 +17,7 @@ public class CategoryController : Controller
     private const string SaveErrorMessage = "Something went wrong";
     private const string CreatedMessage = "Category Created";
     private const string DeleteCrowdedMessage = "Category is not empty";
-    
+
     public CategoryController(ICategoryRepository categoryRepository, IMapper mapper)
     {
         _categoryRepository = categoryRepository;

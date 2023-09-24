@@ -48,7 +48,7 @@ public class CategoryRepository : ICategoryRepository
         _dataContext.Add(category);
         return Save();
     }
-    
+
     public bool UpdateCategory(Category category)
     {
         _dataContext.Update(category);

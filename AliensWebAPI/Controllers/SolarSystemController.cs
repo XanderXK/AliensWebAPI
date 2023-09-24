@@ -101,7 +101,7 @@ public class SolarSystemController : Controller
         {
             return NotFound(NotFoundMessage);
         }
-        
+
         solarSystem.Name = solarSystemDto.Name;
         solarSystem.Address = solarSystemDto.Address;
 

@@ -21,14 +21,14 @@ public class ReviewRepository : IReviewRepository
 
     public Review GetReview(int id)
     {
-        return _dataContext.Reviews.FirstOrDefault(r => r.Id == id);
+        return _dataContext.Reviews.FirstOrDefault(r => r.Id == id)!;
     }
 
     public ICollection<Review> GetAlienReviews(int alienId)
     {
         return _dataContext.Aliens
             .Include(a => a.Reviews)
-            .FirstOrDefault(a => a.Id == alienId).Reviews;
+            .FirstOrDefault(a => a.Id == alienId)!.Reviews;
     }
 
     public bool CreateReview(Review review)
