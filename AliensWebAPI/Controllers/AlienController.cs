@@ -136,7 +136,7 @@ public class AlienController : Controller
         var result = _alienRepository.UpdateAlien(alien);
         if (!result)
         {
-            ModelState.AddModelError("", "Saving error");
+            ModelState.AddModelError("", SaveErrorMessage);
             return StatusCode(500, ModelState);
         }
 
