@@ -62,6 +62,11 @@ public class ReviewController : Controller
             return BadRequest(ModelState);
         }
 
+        if (_alienRepository.GetAlien(alienId) == null)
+        {
+            return NotFound(NoAlienMessage);
+        }
+
         var reviews = _reviewRepository.GetAlienReviews(alienId);
         var reviewDtos = _mapper.Map<List<ReviewDto>>(reviews);
         return Ok(reviewDtos);
