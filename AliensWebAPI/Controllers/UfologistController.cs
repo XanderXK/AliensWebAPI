@@ -42,6 +42,11 @@ public class UfologistController : Controller
         }
 
         var ufologist = _ufologistRepository.GetUfologist(id);
+        if (ufologist == null)
+        {
+            return NotFound(NotFoundMessage);
+        }
+
         var ufologistDto = _mapper.Map<UfologistDto>(ufologist);
         return Ok(ufologistDto);
     }
@@ -54,7 +59,15 @@ public class UfologistController : Controller
             return BadRequest(ModelState);
         }
 
-        return Ok(_ufologistRepository.GetUfologistReviews(ufologistId));
+        var ufologist = _ufologistRepository.GetUfologist(ufologistId);
+        if (ufologist == null)
+        {
+            return NotFound(NotFoundMessage);
+        }
+
+        var reviews = _ufologistRepository.GetUfologistReviews(ufologistId);
+        var reviewDtos = _mapper.Map<List<ReviewDto>>(reviews);
+        return Ok(reviewDtos);
     }
 
     [HttpPost("{name}")]

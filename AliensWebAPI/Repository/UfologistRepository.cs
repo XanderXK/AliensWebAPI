@@ -16,12 +16,16 @@ public class UfologistRepository : IUfologistRepository
 
     public ICollection<Ufologist> GetUfologists()
     {
-        return _dataContext.Ufologists.OrderBy(ufologist => ufologist.Id).ToList();
+        return _dataContext.Ufologists
+            .Include(ufologist => ufologist.Reviews)
+            .OrderBy(ufologist => ufologist.Id).ToList();
     }
 
     public Ufologist? GetUfologist(int id)
     {
-        return _dataContext.Ufologists.FirstOrDefault(ufologist => ufologist.Id == id);
+        return _dataContext.Ufologists
+            .Include(ufologist => ufologist.Reviews)
+            .FirstOrDefault(ufologist => ufologist.Id == id);
     }
 
     public ICollection<Review> GetUfologistReviews(int id)
@@ -44,7 +48,7 @@ public class UfologistRepository : IUfologistRepository
         _dataContext.Remove(ufologist);
         return Save();
     }
-    
+
     public bool Save()
     {
         var saved = _dataContext.SaveChanges();
