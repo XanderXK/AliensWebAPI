@@ -60,6 +60,11 @@ public class AlienController : Controller
             return BadRequest(ModelState);
         }
 
+        if (_alienRepository.GetAlien(id) == null)
+        {
+            return NotFound(AlienNotFoundMessage);
+        }
+
         return Ok(_alienRepository.GetAlienRating(id));
     }
 
